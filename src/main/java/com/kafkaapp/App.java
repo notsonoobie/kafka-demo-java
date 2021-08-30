@@ -2,23 +2,30 @@ package com.kafkaapp;
 
 import java.util.Properties;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Hello world!
- *
+ * Kafka POC - On Local Kafka Server
  */
 public class App 
 {
     public static void main( String[] args )
     {
+        // Logger
+        final Logger logger = LoggerFactory.getLogger(App.class);
+
+        // DEFAULT PRODUCERS CONFIG
         String KAFKA_BOOTSTRAPSERVER = "127.0.0.1:9092";
         String KAFKA_SERIALIZERNAME = StringSerializer.class.getName();
         
-        System.out.println( "===== KAFKA DEMO ON LOCAL MACHINE =====" );
+        logger.info( "===== KAFKA DEMO ON LOCAL MACHINE =====" );
 
         /**
          * Creating Kafka Producer
@@ -41,7 +48,24 @@ public class App
         // Creating a record with a message, to be send on a topic.
         ProducerRecord<String, String> record = new ProducerRecord<String,String>("first_topic", "Hello Kafka."); 
         // Asynchronous - Sending Data to a topic.
-        producer.send(record);
+        producer.send(record, new Callback(){
+            @Override
+            public void onCompletion(RecordMetadata metadata, Exception exception) {
+                // Callback when data is sent to the Kafka Server
+                if(exception != null){
+                    logger.error("Error while Producing Data", exception);
+                }else{
+                    logger.info(
+                        "\n" +
+                        "=== MetaData === \n" + 
+                        "Topic           : " + metadata.topic() + "\n" +
+                        "Topic Partition : " + metadata.partition() + "\n" +
+                        "Offset          : " + metadata.offset() + "\n" +
+                        "Timestamp       : " + metadata.timestamp() + "\n"
+                    );
+                }
+            }
+        });
         // Waiting for Transanction to be complete, if we don't wait then the data won't be send, since the execution will be completed before sending.
         producer.flush();
         // Flush and close producer
