@@ -24,6 +24,7 @@ public class App
         // DEFAULT PRODUCERS CONFIG
         String KAFKA_BOOTSTRAPSERVER = "127.0.0.1:9092";
         String KAFKA_SERIALIZERNAME = StringSerializer.class.getName();
+        String KAFKA_TOPIC = "first_topic";
         
         logger.info( "===== KAFKA DEMO ON LOCAL MACHINE =====" );
 
@@ -46,7 +47,7 @@ public class App
         // 3. Send Message/Data to the topic
 
         // Creating a record with a message, to be send on a topic.
-        ProducerRecord<String, String> record = new ProducerRecord<String,String>("first_topic", "Hello Kafka."); 
+        ProducerRecord<String, String> record = new ProducerRecord<String,String>(KAFKA_TOPIC, "Hello Kafka."); 
         // Asynchronous - Sending Data to a topic.
         producer.send(record, new Callback(){
             @Override
@@ -66,7 +67,7 @@ public class App
                 }
             }
         });
-        // Waiting for Transanction to be complete, if we don't wait then the data won't be send, since the execution will be completed before sending.
+        // Waiting for Transactions to be complete, if we don't wait then the data won't be send, since the execution will be completed before sending.
         producer.flush();
         // Flush and close producer
         producer.close();
