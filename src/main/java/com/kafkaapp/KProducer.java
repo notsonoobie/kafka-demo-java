@@ -13,20 +13,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Kafka POC - On Local Kafka Server
+ * ==============
+ * Kafka Producer
+ * ==============
  */
-public class App 
+public class KProducer 
 {
     public static void main( String[] args )
     {
         // Logger
-        final Logger logger = LoggerFactory.getLogger(App.class);
+        final Logger logger = LoggerFactory.getLogger(KProducer.class);
 
         // DEFAULT PRODUCERS CONFIG
         String KAFKA_BOOTSTRAPSERVER = "127.0.0.1:9092";
         String KAFKA_SERIALIZERNAME = StringSerializer.class.getName();
         String KAFKA_TOPIC = "first_topic";
         
-        logger.info( "===== KAFKA DEMO ON LOCAL MACHINE =====" );
+        logger.info( "===== KAFKA PRODUCER DEMO ON LOCAL MACHINE =====" );
 
         /**
          * Creating Kafka Producer
